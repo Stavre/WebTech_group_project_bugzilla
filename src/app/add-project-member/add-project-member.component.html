@@ -1,0 +1,4 @@
+<ion-content>
+  <app-select-list [data]="users" [keys]="['name', 'email']" (valueChange)="selectUsers($event)"></app-select-list>
+  <ion-button (click)="addNewUsers()">Add users</ion-button>
+</ion-content>

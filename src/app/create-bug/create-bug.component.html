@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Register a bug</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+  <!--description: string;
+  severity: string;
+  link: string;
+  assignedUser: number = null;-->
+
+  <ion-item>
+    <ion-label position="floating">Description</ion-label>
+    <ion-input [(ngModel)]="description" ></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Link</ion-label>
+    <ion-input [(ngModel)]="link" ></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-select [(ngModel)]="severity" interface="popover" placeholder="Select bug severity">
+      <ion-select-option color="success" value="low">low</ion-select-option>
+      <ion-select-option color="medium" value="medium">medium</ion-select-option>
+      <ion-select-option color="warning" value="high">high</ion-select-option>
+      <ion-select-option color="danger" value="critical">critical</ion-select-option>
+    </ion-select>
+  </ion-item> <!-- ['low', 'medium', 'high', 'critical']-->
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button color="danger" (click)="cancel()">Cancel</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button color="medium" (click)="confirm()">Confirm</ion-button>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>

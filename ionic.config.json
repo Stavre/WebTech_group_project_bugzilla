@@ -1,0 +1,7 @@
+{
+  "name": "BugManagement",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

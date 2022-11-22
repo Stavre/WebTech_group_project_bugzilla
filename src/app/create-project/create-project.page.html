@@ -1,0 +1,75 @@
+<ion-content>
+  <ion-header [translucent]="true">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Create a project</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6" offset="3">
+        <form [formGroup]="myForm">
+          <ion-item lines="none" color="light">
+            <ion-label position="floating">Project name</ion-label>
+            <ion-input formControlName="name"></ion-input>
+          </ion-item>
+          <ion-item lines="none" color="light">
+            <ion-label position="floating">Project description</ion-label>
+            <ion-input type="text" formControlName="description"></ion-input>
+          </ion-item>
+          <ion-item lines="none" color="light">
+            <ion-label position="floating">Repository link</ion-label>
+            <ion-input type="text" formControlName="repository"></ion-input>
+          </ion-item>
+         <!-- <ion-item>
+            <ion-grid>
+              <ion-row>
+                <ion-col *ngFor="let member of userList">
+                  <ion-chip>{{member.name}}</ion-chip>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+          <ion-item>
+            <ion-grid>
+              <ion-row>
+                <ion-col>
+                  <ion-searchbar (ionChange)="handleChange($event)" placeholder="Find users"></ion-searchbar>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-list *ngIf="users">
+                    <ion-item *ngFor="let member of filteredUsers" (click)="onSelectUser(member)">
+                      <ion-thumbnail slot="start">
+                        <img alt="Silhouette of mountains" [src]="member.photo" />
+                      </ion-thumbnail>
+                      <ion-label>
+                        <h2>{{ member.name }}</h2>
+                        <p>{{ member.email }}</p>
+                      </ion-label>
+                      <ion-checkbox slot="end" ></ion-checkbox>
+                    </ion-item>
+
+                  </ion-list>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item> -->
+          <ion-item>
+            <app-select-list *ngIf="users" [data]="users" [keys]="['name', 'email']" (valueChange)="setUsers($event)"></app-select-list>
+          </ion-item>
+        </form>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="6" offset="3">
+        <ion-button color="light" (click)="onPost()">Create project</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

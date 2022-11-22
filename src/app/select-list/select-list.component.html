@@ -1,0 +1,29 @@
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-searchbar (ionChange)="handleChange($event)" placeholder="Find"></ion-searchbar>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-list>
+          <ion-item *ngFor="let row of searchResults">
+            <ion-label *ngFor="let key of keys"> {{ row[key] }} </ion-label>
+
+
+            <ion-checkbox (click)="onSelectRow(row)"></ion-checkbox>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+
+    </ion-row>
+    <ion-row>
+      <ion-col *ngFor="let item of selectedItems">
+        <ion-chip>{{item[keys[0]]}} {{item[keys[1]]}} {{item[keys[2]]}}</ion-chip>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-list>
+
+  </ion-list>
+

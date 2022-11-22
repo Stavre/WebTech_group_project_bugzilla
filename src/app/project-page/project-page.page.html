@@ -1,0 +1,132 @@
+<ion-content>
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>My projects</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-grid>
+  <ion-row>
+    <ion-col size="6" offset="3">
+      <ion-accordion-group [multiple]="true">
+        <ion-accordion *ngFor="let project of projects">
+          <ion-item slot="header" color="light">
+            <ion-label>{{project.projectName}}</ion-label>
+            <ion-button color="danger" slot="end" (click)="deleteProject(project.projectId)">
+              <ion-icon  name="trash-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
+          <ion-card slot="content">
+            <ion-card-header>
+              <ion-card-title>
+                <ion-text color="dark">
+                  <h1>{{project.projectName}}</h1>
+                </ion-text>
+
+              </ion-card-title>
+              <ion-card-subtitle>
+                <ion-label>
+                  <ion-text>{{project.description}}</ion-text>
+                </ion-label>
+              </ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-text color="dark">
+
+                <h2>Repository: {{project.repository}}</h2>
+              </ion-text>
+
+              <ion-accordion-group [multiple]="true">
+                <ion-accordion>
+                  <ion-item slot="header" color="light">
+                  <ion-label>Team members</ion-label>
+                  </ion-item>
+                  <ion-list slot="content">
+                    <ion-item *ngFor="let member of getMembers(project.projectId)">
+                      <ion-thumbnail slot="start">
+                        <img alt="Silhouette of mountains" [src]="member.photo" />
+                      </ion-thumbnail>
+                      <ion-label>
+                        <h2>{{ member.name }}</h2>
+                        <p>{{ member.email }}</p>
+                      </ion-label>
+                      <ion-button color="danger" slot="end" (click)="deleteUserFromProject(project.projectId, member.id)">
+                        <ion-icon  name="trash-outline"></ion-icon>
+                      </ion-button>
+                    </ion-item>
+                  </ion-list>
+                </ion-accordion>
+                <ion-accordion>
+                  <ion-item slot="header" color="light">
+                    <ion-label>Bugs</ion-label>
+                  </ion-item>
+                  <div slot="content">
+                    <ion-grid>
+                      <ion-row>
+                        <ion-col>
+                          <!--'low', 'medium', 'high', 'critical'-->
+                          <ion-item lines="none">
+                            <ion-label>Low priority Bugs</ion-label>
+                            <ion-toggle slot="end"></ion-toggle>
+                          </ion-item>
+                        </ion-col>
+                        <ion-col>
+                          <ion-item lines="none">
+                            <ion-label>Medium priority Bugs</ion-label>
+                            <ion-toggle slot="end"></ion-toggle>
+                          </ion-item>
+                        </ion-col>
+                        <ion-col>
+                          <ion-item lines="none">
+                            <ion-label>High priority Bugs</ion-label>
+                            <ion-toggle slot="end"></ion-toggle>
+                          </ion-item>
+                        </ion-col>
+                        <ion-col>
+                          <ion-item lines="none">
+                            <ion-label>Critical priority Bugs</ion-label>
+                            <ion-toggle slot="end"></ion-toggle>
+                          </ion-item>
+                        </ion-col>
+                        <ion-col>
+                          <ion-item lines="none">
+                            <ion-label>Fixed Bugs</ion-label>
+                            <ion-toggle slot="end"></ion-toggle>
+                          </ion-item>
+                        </ion-col>
+                        <ion-col>
+                          <ion-item lines="none">
+                            <ion-label>Unfixed Bugs</ion-label>
+                            <ion-toggle slot="end"></ion-toggle>
+                          </ion-item>
+                        </ion-col>
+                        <ion-col>
+                          <ion-item lines="none">
+                            <ion-label>Assigned Bugs</ion-label>
+                            <ion-toggle slot="end"></ion-toggle>
+                          </ion-item>
+                        </ion-col>
+                        <ion-col>
+                          <ion-item lines="none">
+                            <ion-label>Unassigned Bugs</ion-label>
+                            <ion-toggle slot="end"></ion-toggle>
+                          </ion-item>
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                  </div>
+                </ion-accordion>
+              </ion-accordion-group>
+              <ion-button (click)="addMember(project.projectId)">Add member</ion-button>
+
+            </ion-card-content>
+          </ion-card>
+        </ion-accordion>
+      </ion-accordion-group>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+</ion-content>
