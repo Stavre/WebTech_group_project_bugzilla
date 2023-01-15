@@ -9,7 +9,10 @@
   severity: string;
   link: string;
   assignedUser: number = null;-->
-
+  <ion-item>
+    <ion-label position="floating">Title</ion-label>
+    <ion-input [(ngModel)]="title" ></ion-input>
+  </ion-item>
   <ion-item>
     <ion-label position="floating">Description</ion-label>
     <ion-input [(ngModel)]="description" ></ion-input>

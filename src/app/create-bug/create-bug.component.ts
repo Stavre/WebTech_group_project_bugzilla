@@ -9,6 +9,7 @@ import { DbService } from '../db.service';
 })
 export class CreateBugComponent implements OnInit {
   description: string;
+  title: string;
   severity: string;
   link: string;
   assignedUser: number = null;
@@ -38,7 +39,7 @@ export class CreateBugComponent implements OnInit {
 
   confirm() {
     if (this.description && this.severity && this.link){
-      this.db.addBug(this.testerId, this.projectId, this.description, this.link, this.severity)
+      this.db.addBug(this.testerId, this.projectId, this.title, this.description, this.link, this.severity)
       .subscribe(data => console.log(data));
     }
     return this.modalCtrl.dismiss('success', 'confirm');

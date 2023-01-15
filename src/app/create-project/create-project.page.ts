@@ -3,7 +3,6 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { DbService } from '../db.service';
-import { Member } from '../member';
 
 @Component({
   selector: 'app-create-project',

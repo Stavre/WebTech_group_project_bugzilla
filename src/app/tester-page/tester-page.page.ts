@@ -17,6 +17,11 @@ export class TesterPagePage implements OnInit {
   connectedUser: any;
   constructor(private db: DbService,
               private modalCtrl: ModalController) {
+    this.setup();
+  }
+
+  setup(){
+
     this.db.getProjects().subscribe(data => {
       this.projects = data;
       this.results = data;
@@ -41,7 +46,11 @@ export class TesterPagePage implements OnInit {
   }
 
   onRegisterTester(projectId: string){
-    this.db.addTester(this.connectedUser.id, projectId).subscribe(data => console.log(data));
+    this.db.addTester(this.connectedUser.id, projectId).subscribe(data => {
+      this.setup();
+      console.log(data);
+    });
+
   }
 
   async onRegisterBug(projectId: string){
@@ -60,6 +69,8 @@ export class TesterPagePage implements OnInit {
 
     if (role === 'confirm') {
       console.log(`Hello, ${data}!`);
+    this.setup();
+
     }
   }
 

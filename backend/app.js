@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const app = express();
 const { Sequelize, DataTypes } = require('sequelize');
 const { registerWebPlugin } = require("@capacitor/core");
+const { NodeBuilderFlags } = require("typescript");
 
 
 app.use(bodyParser.json());
@@ -59,10 +60,19 @@ const Tester = sequelize.define('Tester', {
 const Bug = sequelize.define('Bug', {
   userId: DataTypes.INTEGER,
   projectId: DataTypes.INTEGER,
+  title: DataTypes.STRING,
   description: DataTypes.STRING,
   severity: {
     type: DataTypes.ENUM,
     values: ['low', 'medium', 'high', 'critical']
+  },
+  fixed : {
+    type: DataTypes.ENUM,
+    values: ['fixed', 'unfixed']
+  },
+  assigned: {
+    type: DataTypes.ENUM,
+    values: ['assigned', 'unassigned']
   },
   link: DataTypes.STRING,
   assignedUser: DataTypes.INTEGER
@@ -113,7 +123,7 @@ app.post("/api/addProject", (req, res) => {
 
 app.post("/api/addUserToProject", (req, res) => {
   const post = req.body;
-  ProjectUser.create(post).then(() => res.status(200));
+  ProjectUser.create(post).then(() => res.status(200).json({message: "server: added user to project"}));
 })
 
 app.post("/api/auth", (req, res) => {
@@ -148,8 +158,7 @@ app.post("/api/auth", (req, res) => {
 
 app.post('/api/user', (req, res) => {
   const idSearch = req.body.id;
-  //console.log('server');
-  //console.log(req.body)
+
   User.findAll({
     where: {
       id: idSearch
@@ -158,6 +167,70 @@ app.post('/api/user', (req, res) => {
     //console.log(data);
     res.status(200).json(data[0].dataValues);
   });
+})
+
+app.post('/api/bugs/solve', (req, res) => {
+  const projectId = req.body.projectId
+  const bugId = req.body.bugId;
+
+  Bug.update(
+    {
+      fixed: 'fixed',
+      assigned: 'unassigned',
+      assignedUser: -1
+    },
+    {
+      where: {
+        projectId: projectId,
+        id: bugId
+      }
+    }
+  ).then(reply => {
+    res.status(200).json({message: "serve: bug state updated"});
+  });
+})
+
+app.post('/api/bugs', (req, res) => {
+  const projectId = req.body.projectId
+  const bugId = req.body.bugId;
+  const userId = req.body.userId;
+
+  Bug.update(
+    {
+      assignedUser: userId,
+      assigned: 'assigned'
+    },
+    {
+      where: {
+        projectId: projectId,
+        id: bugId
+      }
+    }
+  ).then(reply => {
+    res.status(200).json({message: "serve: bug state added"});
+  });
+
+})
+
+app.get('/api/bugs/:projectId/:userId', (req, res) => {
+  const projectId = req.params.projectId;
+  const userId = req.params.userId;
+  console.log('hasBug', projectId, userId);
+  Bug.findOne({
+    where: {
+      projectId: projectId,
+      assignedUser: userId
+    }
+  }).then(data => {
+    console.log('has bug data');
+    console.log(data);
+    if (data !== null){
+      res.status(200).json(true);
+    }
+    if (data === null){
+      res.status(200).json(false);
+    }
+  })
 })
 
 app.post('/api/project', (req, res) =>{
@@ -189,10 +262,12 @@ app.post('/api/project', (req, res) =>{
 
 app.delete('/api/project/:projectId', async (req, res) => {
   const projectId = req.params.projectId;
-  await Project.destroy({
+  Project.destroy({
     where: {
       id: projectId
     }
+  }).then(reply => {
+    res.status(200).json({message: "serve: bug state updated"});
   });
 
   await ProjectUser.destroy({
@@ -202,22 +277,37 @@ app.delete('/api/project/:projectId', async (req, res) => {
   });
 })
 
+app.get('/api/bugs/:projectId', (req, res) => {
+  const projectId = req.params.projectId;
+  console.log("i'm here");
+  console.log(projectId);
+  Bug.findAll({
+    where: {
+      projectId: projectId
+    }
+  }).then(data => res.status(200).json(data));
+})
+
 app.delete('/api/userProjects/:projectId/:userId', async (req, res) => {
   const projectId = req.params.projectId;
   const userId = req.params.userId;
   console.log('delete user from project');
   console.log(projectId, userId);
-  await ProjectUser.destroy({
+  ProjectUser.destroy({
     where: {
       projectId: projectId,
       userId: userId
     }
+  }).then(reply => {
+    res.status(200).json({message: "serve: bug state updated"});
   });
 
 })
 
 app.post('/api/addTester', (req, res) => {
-  Tester.create(req.body).then(() => res.status(200));
+  Tester.create(req.body).then(reply => {
+    res.status(200).json({message: "serve: addTester state added"});
+  });
 })
 
 app.post('/api/addBug', (req, res) => {
@@ -231,14 +321,7 @@ app.post('/api/addBug', (req, res) => {
   },
   link: DataTypes.STRING,
   assignedUser: DataTypes.INTEGER */
-  Bug.create({
-    userId: bug.testerId,
-    projectId: bug.projectId,
-    description: bug.description,
-    severity: bug.severity,
-    link: bug.link,
-    assignedUser: -1
-  }).then(() => res.status(200));
+  Bug.create(bug).then(() => res.status(200).json({message: 'server: bug added'}));
 })
 
 app.post('/api/userProjects', (req, res) => {

@@ -13,7 +13,7 @@
     <ion-col size="6" offset="3">
       <ion-accordion-group [multiple]="true">
         <ion-accordion *ngFor="let project of projects">
-          <ion-item slot="header" color="light">
+          <ion-item slot="header" color="light" (click)="getBugs(project.projectId)">
             <ion-label>{{project.projectName}}</ion-label>
             <ion-button color="danger" slot="end" (click)="deleteProject(project.projectId)">
               <ion-icon  name="trash-outline"></ion-icon>
@@ -46,9 +46,7 @@
                   </ion-item>
                   <ion-list slot="content">
                     <ion-item *ngFor="let member of getMembers(project.projectId)">
-                      <ion-thumbnail slot="start">
-                        <img alt="Silhouette of mountains" [src]="member.photo" />
-                      </ion-thumbnail>
+
                       <ion-label>
                         <h2>{{ member.name }}</h2>
                         <p>{{ member.email }}</p>
@@ -70,50 +68,91 @@
                           <!--'low', 'medium', 'high', 'critical'-->
                           <ion-item lines="none">
                             <ion-label>Low priority Bugs</ion-label>
-                            <ion-toggle slot="end"></ion-toggle>
+                            <ion-toggle slot="end" [(ngModel)]="low" (ngModelChange)="filter()"></ion-toggle>
                           </ion-item>
                         </ion-col>
                         <ion-col>
                           <ion-item lines="none">
                             <ion-label>Medium priority Bugs</ion-label>
-                            <ion-toggle slot="end"></ion-toggle>
+                            <ion-toggle slot="end" [(ngModel)]="medium" (ngModelChange)="filter()"></ion-toggle>
                           </ion-item>
                         </ion-col>
                         <ion-col>
                           <ion-item lines="none">
                             <ion-label>High priority Bugs</ion-label>
-                            <ion-toggle slot="end"></ion-toggle>
+                            <ion-toggle  slot="end" [(ngModel)]="high" (ngModelChange)="filter()"></ion-toggle>
                           </ion-item>
                         </ion-col>
                         <ion-col>
                           <ion-item lines="none">
                             <ion-label>Critical priority Bugs</ion-label>
-                            <ion-toggle slot="end"></ion-toggle>
+                            <!--'low', 'medium', '', ''-->
+                            <ion-toggle slot="end" [(ngModel)]="critical" (ngModelChange)="filter()"></ion-toggle>
                           </ion-item>
                         </ion-col>
                         <ion-col>
                           <ion-item lines="none">
                             <ion-label>Fixed Bugs</ion-label>
-                            <ion-toggle slot="end"></ion-toggle>
+                            <ion-toggle slot="end" [(ngModel)]="fixed" (ngModelChange)="filter()"></ion-toggle>
                           </ion-item>
                         </ion-col>
                         <ion-col>
                           <ion-item lines="none">
                             <ion-label>Unfixed Bugs</ion-label>
-                            <ion-toggle slot="end"></ion-toggle>
+                            <ion-toggle slot="end" [(ngModel)]="unfixed"  (ngModelChange)="filter()"></ion-toggle>
                           </ion-item>
                         </ion-col>
                         <ion-col>
                           <ion-item lines="none">
                             <ion-label>Assigned Bugs</ion-label>
-                            <ion-toggle slot="end"></ion-toggle>
+                            <ion-toggle slot="end" [(ngModel)]="assigned"  (ngModelChange)="filter()"></ion-toggle>
                           </ion-item>
                         </ion-col>
                         <ion-col>
                           <ion-item lines="none">
                             <ion-label>Unassigned Bugs</ion-label>
-                            <ion-toggle slot="end"></ion-toggle>
+                            <ion-toggle [(ngModel)]="unassigned" slot="end"  (ngModelChange)="filter()"></ion-toggle>
                           </ion-item>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col>
+
+<!--assignedUser createdAt description fixed id link projectId severity
+updatedAt-->
+
+                          <ion-accordion-group [multiple]="true">
+                            <div *ngIf="hasBug !== undefined && bugs">
+                              <ion-accordion  *ngFor="let bug of filteredBugs">
+                                <ion-item slot="header" color="light">
+                                  <ion-label>{{bug.title}}</ion-label>
+                                  <ion-chip *ngIf="bug.assigned === 'unassigned'" color="danger">Unassigned bug</ion-chip>
+                                  <ion-chip *ngIf="bug.assigned === 'assigned'" color="secondary">Assigned bug</ion-chip>
+
+                                  <ion-chip *ngIf="bug.fixed === 'unfixed'" color="danger">Unsolved bug</ion-chip>
+                                  <ion-chip *ngIf="bug.fixed === 'fixed'" color="success">Solved bug</ion-chip>
+
+                                  <ion-chip *ngIf="bug.severity === 'medium'" color="medium">{{bug.severity}}</ion-chip>
+                                  <ion-chip *ngIf="bug.severity === 'high'" color="warning">{{bug.severity}}</ion-chip>
+                                  <ion-chip *ngIf="bug.severity === 'critical'" color="danger">{{bug.severity}}</ion-chip>
+                                  <ion-chip *ngIf="bug.severity === 'low'" color="light">{{bug.severity}}</ion-chip>
+
+                                </ion-item>
+                                <ion-card slot="content">
+                                  <ion-card-header>
+                                    <ion-card-title>{{bug.title}}</ion-card-title>
+                                    <ion-card-subtitle>{{bug.description}}</ion-card-subtitle>
+                                  </ion-card-header>
+                                  <ion-card-content>
+                                    <ion-button *ngIf="!hasBug && bug.assignedUser === -1 && bug.fixed === 'unfixed'" (click)="assignBug(bug.projectId, bug.id)">Take this bug</ion-button>
+                                    <ion-button *ngIf="bug.assignedUser === userId.id && bug.fixed === 'unfixed'" (click)="solveBug(bug.projectId, bug.id)">Solve this bug</ion-button>
+                                  </ion-card-content>
+                                </ion-card>
+                              </ion-accordion>
+                            </div>
+
+                          </ion-accordion-group>
+
                         </ion-col>
                       </ion-row>
                     </ion-grid>
